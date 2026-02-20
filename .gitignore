@@ -1,0 +1,10 @@
+/target
+
+# Fichiers de configuration et outils
+AGENTS.md
+opencode.json
+.env
+
+# Base de données et uploads
+*.db
+uploads/

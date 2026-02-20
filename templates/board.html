@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}/{{ board.slug }}/ - {{ board.name }}{% endblock %}
+
+{% block content %}
+<div class="board">
+    <div class="board-header">
+        <h2>/{{ board.slug }}/ — {{ board.name }}</h2>
+        <p class="board-desc">{{ board.description }}</p>
+    </div>
+    
+    <div class="post-form-container">
+        <button class="toggle-form" onclick="toggleForm('thread-form')">+ New Thread</button>
+        <form id="thread-form" class="post-form" action="/{{ board.slug }}/post" method="post" enctype="multipart/form-data">
+            <table>
+                <tr>
+                    <td><label>Comment</label></td>
+                    <td><textarea name="content" rows="4" cols="40" required placeholder="Type your message..."></textarea></td>
+                </tr>
+                <tr>
+                    <td><label>Image</label></td>
+                    <td><input type="file" name="image" accept="image/*"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><button type="submit">Post</button></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    
+    <hr>
+    
+    <div class="threads">
+        {% for thread in threads %}
+        <div class="thread-preview" id="t{{ thread.op.id }}">
+            <div class="op-post clearfix">
+                {% if thread.op.image_path %}
+                <div class="image-container">
+                    <a href="/uploads/{{ thread.op.image_path }}" target="_blank">
+                        <img src="/uploads/{{ thread.op.image_path }}" alt="Image" class="thumb">
+                    </a>
+                    <span class="file-info">FILE: {{ thread.op.image_name | default(value="") | upper }}</span>
+                </div>
+                {% endif %}
+                <div class="post-header">
+                    <span class="post-id">No.{{ thread.op.id }}</span>
+                    <a href="/{{ board.slug }}/thread/{{ thread.op.id }}#t{{ thread.op.id }}" class="reply-link">Reply</a>
+                    <span class="author-id" style="background-color: #{{ thread.op.author_id | str_slice(end=6) }}">{{ thread.op.author_id | str_slice(end=8) }}</span>
+                    <span class="date">{{ thread.op.created_at | date(format="%Y-%m-%d %H:%M:%S") }}</span>
+                </div>
+                {% if thread.reply_count > 3 %}
+                <span class="omitted">{{ thread.reply_count - 3 }} posts omitted. <a href="/{{ board.slug }}/thread/{{ thread.op.id }}">[View All]</a></span>
+                {% endif %}
+                <div class="post-content">{{ thread.op.content | safe }}</div>
+            </div>
+            {% for reply in thread.replies %}
+            <div class="reply-post clearfix">
+                {% if reply.image_path %}
+                <div class="image-container">
+                    <a href="/uploads/{{ reply.image_path }}" target="_blank">
+                        <img src="/uploads/{{ reply.image_path }}" alt="Image" class="thumb">
+                    </a>
+                    <span class="file-info">FILE: {{ reply.image_name | default(value="") | upper }}</span>
+                </div>
+                {% endif %}
+                <div class="post-header">
+                    <span class="post-id">No.{{ reply.id }}</span>
+                    <a href="/{{ board.slug }}/thread/{{ thread.op.id }}#p{{ reply.id }}" class="reply-link">Reply</a>
+                    <span class="author-id" style="background-color: #{{ reply.author_id | str_slice(end=6) }}">{{ reply.author_id | str_slice(end=8) }}</span>
+                    <span class="date">{{ reply.created_at | date(format="%Y-%m-%d %H:%M:%S") }}</span>
+                </div>
+                <div class="post-content">{{ reply.content | safe }}</div>
+            </div>
+            {% endfor %}
+        </div>
+        <hr>
+        {% endfor %}
+        
+        {% if threads|length == 0 %}
+        <p class="no-threads">No threads yet. Be the first to post!</p>
+        {% endif %}
+    </div>
+</div>
+
+<script>
+function toggleForm(id) {
+    const form = document.getElementById(id);
+    form.classList.toggle('visible');
+}
+</script>
+{% endblock %}

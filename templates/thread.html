@@ -1,0 +1,90 @@
+{% extends "base.html" %}
+
+{% block title %}/{{ board.slug }}/ - Thread #{{ thread.op.id }}{% endblock %}
+
+{% block content %}
+<div class="thread">
+    <a href="/{{ board.slug }}/" class="back-link">&lt; Return to /{{ board.slug }}/</a>
+    
+    <div class="post-form-container">
+        <button class="toggle-form" onclick="toggleForm('reply-form')">+ Reply to Thread</button>
+        <form id="reply-form" class="post-form" action="/{{ board.slug }}/thread/{{ thread.op.id }}/reply" method="post" enctype="multipart/form-data">
+            <table>
+                <tr>
+                    <td><label>Comment</label></td>
+                    <td><textarea name="content" rows="4" cols="40" required placeholder="Type your reply..."></textarea></td>
+                </tr>
+                <tr>
+                    <td><label>Image</label></td>
+                    <td><input type="file" name="image" accept="image/*"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td><button type="submit">Post Reply</button></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    
+    <hr>
+    
+    <div class="thread-full" id="t{{ thread.op.id }}">
+        <div class="op-post clearfix">
+            {% if thread.op.image_path %}
+            <div class="image-container">
+                <a href="/uploads/{{ thread.op.image_path }}" target="_blank">
+                    <img src="/uploads/{{ thread.op.image_path }}" alt="Image" class="thumb">
+                </a>
+                <span class="file-info">FILE: {{ thread.op.image_name | default(value="") | upper }}</span>
+            </div>
+            {% endif %}
+            <div class="post-header">
+                <span class="post-id">No.{{ thread.op.id }}</span>
+                <button class="reply-link" onclick="quoteReply({{ thread.op.id }})">Reply</button>
+                <span class="author-id" style="background-color: #{{ thread.op.author_id | str_slice(end=6) }}">{{ thread.op.author_id | str_slice(end=8) }}</span>
+                <span class="date">{{ thread.op.created_at | date(format="%Y-%m-%d %H:%M:%S") }}</span>
+            </div>
+            <div class="post-content">{{ thread.op.content | safe }}</div>
+        </div>
+        
+        {% for reply in thread.replies %}
+        <div class="reply-post clearfix" id="p{{ reply.id }}">
+            {% if reply.image_path %}
+            <div class="image-container">
+                <a href="/uploads/{{ reply.image_path }}" target="_blank">
+                    <img src="/uploads/{{ reply.image_path }}" alt="Image" class="thumb">
+                </a>
+                <span class="file-info">FILE: {{ reply.image_name | default(value="") | upper }}</span>
+            </div>
+            {% endif %}
+            <div class="post-header">
+                <span class="post-id">No.{{ reply.id }}</span>
+                <button class="reply-link" onclick="quoteReply({{ reply.id }})">Reply</button>
+                <span class="author-id" style="background-color: #{{ reply.author_id | str_slice(end=6) }}">{{ reply.author_id | str_slice(end=8) }}</span>
+                <span class="date">{{ reply.created_at | date(format="%Y-%m-%d %H:%M:%S") }}</span>
+                <a href="#p{{ reply.id }}" class="reply-link" style="margin-left: auto;">#</a>
+            </div>
+            <div class="post-content">{{ reply.content | safe }}</div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+function toggleForm(id) {
+    const form = document.getElementById(id);
+    form.classList.toggle('visible');
+}
+
+function quoteReply(postId) {
+    const form = document.getElementById('reply-form');
+    if (!form.classList.contains('visible')) {
+        form.classList.add('visible');
+    }
+    const textarea = form.querySelector('textarea');
+    const quote = '>>' + postId + '\n';
+    textarea.value = quote + textarea.value;
+    textarea.focus();
+}
+</script>
+{% endblock %}

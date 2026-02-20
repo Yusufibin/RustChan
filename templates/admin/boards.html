@@ -1,0 +1,103 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Boards - Admin{% endblock %}
+
+{% block content %}
+<div class="admin-panel">
+    <h2>Manage Boards</h2>
+    
+    <div class="admin-nav">
+        <a href="/admin/dashboard">Dashboard</a>
+        <a href="/admin/boards">Boards</a>
+        <a href="/admin/posts">Posts</a>
+    </div>
+    
+    <h3>Create New Board</h3>
+    <form method="post" action="/admin/boards" enctype="multipart/form-data" style="background: #222; padding: 1rem; margin: 1rem 0;">
+        <div class="form-group">
+            <label for="slug">Slug (e.g., "tech")</label>
+            <input type="text" id="slug" name="slug" required>
+        </div>
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" name="description" rows="2"></textarea>
+        </div>
+        <button type="submit" class="btn">Create Board</button>
+    </form>
+    
+    <h3>Existing Boards</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Slug</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for board in boards %}
+            <tr>
+                <td>/{{ board.slug }}/</td>
+                <td>{{ board.name }}</td>
+                <td>{{ board.description }}</td>
+                <td>
+                    <a href="/{{ board.slug }}/">View</a> |
+                    <button type="button" class="btn btn-small" onclick="openEditModal('{{ board.slug }}', '{{ board.name }}', '{{ board.description }}')">Edit</button> |
+                    <form method="get" action="/admin/boards/{{ board.slug }}/delete" style="display:inline;">
+                        <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Delete this board and all its posts?')">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div id="editModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8);">
+    <div class="modal-content" style="background: #222; margin: 10% auto; padding: 2rem; max-width: 500px; border-radius: 4px;">
+        <h3>Edit Board</h3>
+        <form method="post" id="editForm" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="editSlug">Slug</label>
+                <input type="text" id="editSlug" name="slug" readonly style="background: #333;">
+            </div>
+            <div class="form-group">
+                <label for="editName">Name</label>
+                <input type="text" id="editName" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="editDescription">Description</label>
+                <textarea id="editDescription" name="description" rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn">Save Changes</button>
+            <button type="button" class="btn btn-danger" onclick="closeEditModal()">Cancel</button>
+        </form>
+    </div>
+</div>
+
+<script>
+function openEditModal(slug, name, description) {
+    document.getElementById('editSlug').value = slug;
+    document.getElementById('editName').value = name;
+    document.getElementById('editDescription').value = description;
+    document.getElementById('editForm').action = '/admin/boards/' + slug + '/edit';
+    document.getElementById('editModal').style.display = 'block';
+}
+
+function closeEditModal() {
+    document.getElementById('editModal').style.display = 'none';
+}
+
+window.onclick = function(event) {
+    var modal = document.getElementById('editModal');
+    if (event.target == modal) {
+        modal.style.display = 'none';
+    }
+}
+</script>
+{% endblock %}

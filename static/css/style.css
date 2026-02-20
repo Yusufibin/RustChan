@@ -1,0 +1,552 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    border-radius: 0 !important;
+}
+
+:root {
+    --black: #000000;
+    --red: #ff3333;
+    --blue: #3333ff;
+    --yellow: #ffff33;
+    --white: #ffffff;
+    --light-gray: #f0f0f0;
+    --border-width: 3px;
+    --shadow-offset: 6px;
+}
+
+body {
+    font-family: 'JetBrains Mono', 'Courier New', monospace;
+    font-size: 14px;
+    background-color: var(--white);
+    color: var(--black);
+    line-height: 1.6;
+}
+
+a {
+    color: var(--blue);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
+a:hover {
+    background-color: var(--yellow);
+    color: var(--black);
+}
+
+header {
+    background-color: var(--black);
+    border-bottom: var(--border-width) solid var(--black);
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+header h1 a {
+    color: var(--white);
+    font-size: 28px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 2px;
+}
+
+header h1 a:hover {
+    background: var(--yellow);
+    color: var(--black);
+    padding: 2px 8px;
+}
+
+header nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+header nav a {
+    color: var(--white);
+    font-weight: bold;
+    text-decoration: none;
+    padding: 8px 12px;
+    border: 2px solid var(--white);
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+header nav a:hover {
+    background: var(--white);
+    color: var(--black);
+    box-shadow: 4px 4px 0 var(--yellow);
+}
+
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 30px 20px;
+}
+
+footer {
+    background: var(--black);
+    color: var(--white);
+    text-align: center;
+    padding: 30px;
+    margin-top: 50px;
+    border-top: var(--border-width) solid var(--black);
+}
+
+footer p {
+    text-transform: uppercase;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.post-form-container {
+    margin-bottom: 30px;
+}
+
+.toggle-form {
+    background-color: var(--white);
+    border: var(--border-width) solid var(--black);
+    padding: 12px 24px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 4px 4px 0 var(--black);
+    transition: all 0.1s ease;
+}
+
+.toggle-form:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--yellow);
+    background: var(--yellow);
+}
+
+.toggle-form:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--black);
+}
+
+.post-form {
+    background-color: var(--white);
+    border: var(--border-width) solid var(--black);
+    padding: 20px;
+    margin: 20px 0;
+    display: none;
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+}
+
+.post-form.visible {
+    display: block;
+}
+
+.post-form table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.post-form td {
+    padding: 10px;
+    vertical-align: top;
+}
+
+.post-form td:first-child {
+    width: 100px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.post-form label {
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.post-form input[type="file"] {
+    font-family: inherit;
+    font-size: 12px;
+    padding: 10px;
+    border: 2px solid var(--black);
+    width: 100%;
+    background: var(--white);
+}
+
+.post-form textarea {
+    width: 100%;
+    min-height: 120px;
+    border: var(--border-width) solid var(--black);
+    padding: 12px;
+    font-family: inherit;
+    font-size: 14px;
+    background: var(--white);
+    resize: vertical;
+}
+
+.post-form textarea:focus,
+.post-form input:focus {
+    outline: none;
+    background: var(--yellow);
+    box-shadow: 4px 4px 0 var(--black);
+}
+
+.post-form button {
+    background-color: var(--red);
+    color: var(--white);
+    border: var(--border-width) solid var(--black);
+    padding: 12px 30px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: bold;
+    text-transform: uppercase;
+    box-shadow: 4px 4px 0 var(--black);
+    transition: all 0.1s ease;
+}
+
+.post-form button:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0 var(--yellow);
+    background: var(--blue);
+}
+
+.post-form button:active {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0 var(--black);
+}
+
+.thread-preview {
+    margin-bottom: 30px;
+}
+
+.op-post, .reply-post {
+    background-color: var(--white);
+    border: var(--border-width) solid var(--black);
+    padding: 16px;
+    margin: 10px 0;
+    box-shadow: var(--shadow-offset) var(--shadow-offset) 0 var(--black);
+}
+
+.op-post {
+    background-color: var(--light-gray);
+}
+
+.reply-post {
+    margin-left: 30px;
+    border-left: var(--border-width) solid var(--black);
+}
+
+@media (max-width: 600px) {
+    .reply-post {
+        margin-left: 10px;
+    }
+    
+    .op-post, .reply-post {
+        box-shadow: 4px 4px 0 var(--black);
+    }
+}
+
+.post-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--black);
+}
+
+.post-id {
+    font-weight: bold;
+    font-size: 13px;
+    padding: 4px 8px;
+    background: var(--black);
+    color: var(--white);
+}
+
+.reply-link {
+    font-weight: bold;
+    font-size: 12px;
+    text-transform: uppercase;
+    padding: 4px 8px;
+    border: 2px solid var(--black);
+    text-decoration: none;
+}
+
+.reply-link:hover {
+    background: var(--yellow);
+    box-shadow: 2px 2px 0 var(--black);
+}
+
+.author-id {
+    padding: 4px 8px;
+    font-size: 11px;
+    font-family: monospace;
+    border: 2px solid var(--black);
+    font-weight: bold;
+}
+
+.date {
+    color: var(--black);
+    font-size: 12px;
+    opacity: 0.7;
+    margin-left: auto;
+}
+
+.post-content {
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    line-height: 1.7;
+}
+
+.image-container {
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 15px;
+}
+
+.thumb {
+    max-width: 250px;
+    max-height: 250px;
+    border: var(--border-width) solid var(--black);
+    cursor: pointer;
+    box-shadow: 4px 4px 0 var(--black);
+}
+
+.thumb:hover {
+    box-shadow: 6px 6px 0 var(--yellow);
+    transform: translate(-2px, -2px);
+}
+
+.file-info {
+    display: block;
+    font-size: 11px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-top: 6px;
+    padding: 4px 8px;
+    background: var(--yellow);
+    border: 2px solid var(--black);
+    width: fit-content;
+}
+
+.omitted {
+    font-size: 12px;
+    padding: 8px 12px;
+    background: var(--light-gray);
+    border: 2px solid var(--black);
+    margin: 10px 0;
+    display: inline-block;
+}
+
+.omitted a {
+    font-weight: bold;
+    background: var(--white);
+    padding: 2px 6px;
+    border: 2px solid var(--black);
+    text-decoration: none;
+}
+
+.omitted a:hover {
+    background: var(--yellow);
+}
+
+.quote {
+    color: var(--red);
+    font-weight: bold;
+}
+
+.greentext {
+    color: #228b22;
+    font-weight: bold;
+}
+
+hr {
+    border: none;
+    border-top: var(--border-width) solid var(--black);
+    margin: 30px 0;
+}
+
+.board-header {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: var(--yellow);
+    border: var(--border-width) solid var(--black);
+    box-shadow: 6px 6px 0 var(--black);
+}
+
+.board-header h2 {
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.board-desc {
+    font-style: normal;
+    font-size: 14px;
+}
+
+.no-threads {
+    text-align: center;
+    padding: 60px 20px;
+    border: var(--border-width) dashed var(--black);
+    background: var(--light-gray);
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.boards-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    border: var(--border-width) solid var(--black);
+}
+
+.boards-table th {
+    background: var(--black);
+    color: var(--white);
+    padding: 15px;
+    text-transform: uppercase;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-align: left;
+    border: 2px solid var(--black);
+}
+
+.boards-table td {
+    padding: 15px;
+    border: 2px solid var(--black);
+    background: var(--white);
+}
+
+.boards-table tr:hover td {
+    background: var(--yellow);
+}
+
+.boards-table a {
+    font-weight: bold;
+    text-decoration: none;
+    padding: 4px 8px;
+    border: 2px solid var(--black);
+}
+
+.boards-table a:hover {
+    background: var(--black);
+    color: var(--white);
+}
+
+.home-container {
+    display: grid;
+    gap: 30px;
+}
+
+.rules-box {
+    background: var(--white);
+    border: var(--border-width) solid var(--black);
+    padding: 25px;
+    box-shadow: 6px 6px 0 var(--black);
+}
+
+.rules-box h2 {
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 3px solid var(--black);
+}
+
+.rules-box ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.rules-box li {
+    padding: 10px 0;
+    padding-left: 25px;
+    position: relative;
+    border-bottom: 1px solid var(--black);
+}
+
+.rules-box li:last-child {
+    border-bottom: none;
+}
+
+.rules-box li::before {
+    content: '>';
+    position: absolute;
+    left: 0;
+    font-weight: bold;
+    color: var(--red);
+}
+
+.welcome-text {
+    font-size: 16px;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: var(--yellow);
+    border: 2px solid var(--black);
+    font-weight: bold;
+}
+
+.clearfix::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.thread-nav {
+    margin: 20px 0;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.thread-nav a {
+    padding: 8px 16px;
+    background: var(--white);
+    border: 2px solid var(--black);
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+.thread-nav a:hover {
+    background: var(--black);
+    color: var(--white);
+    box-shadow: 4px 4px 0 var(--yellow);
+}
+
+.back-link {
+    display: inline-block;
+    padding: 10px 20px;
+    background: var(--black);
+    color: var(--white);
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    border: 2px solid var(--black);
+}
+
+.back-link:hover {
+    background: var(--white);
+    color: var(--black);
+    box-shadow: 4px 4px 0 var(--yellow);
+}

@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}RustChan{% endblock %}
+
+{% block content %}
+<div class="home-container">
+    <div class="rules-box">
+        <h2>Welcome to RustChan</h2>
+        <p class="welcome-text">> An anonymous imageboard built with Rust</p>
+        <ul>
+            <li>No account required to post</li>
+            <li>Your identity is anonymous (hashed from IP)</li>
+            <li>Images are optional but recommended</li>
+            <li>Be respectful and follow the rules</li>
+        </ul>
+    </div>
+    
+    <div class="rules-box">
+        <h2>Boards</h2>
+        <table class="boards-table">
+            <thead>
+                <tr>
+                    <th>Board</th>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for board in boards %}
+                <tr>
+                    <td><a href="/{{ board.slug }}/">/{{ board.slug }}/</a></td>
+                    <td>{{ board.name }}</td>
+                    <td>{{ board.description }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
