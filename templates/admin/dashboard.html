@@ -1,54 +1,49 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Dashboard - Admin{% endblock %}
+{% block title %}Dashboard — Admin{% endblock %}
+{% block nav_dashboard %}class="active"{% endblock %}
 
 {% block content %}
-<div class="admin-panel">
-    <h2>Admin Dashboard</h2>
-    
-    <div class="admin-nav">
-        <a href="/admin/dashboard">Dashboard</a>
-        <a href="/admin/boards">Boards</a>
-        <a href="/admin/posts">Posts</a>
+<h2>Dashboard</h2>
+
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-card-label">Total Boards</div>
+        <div class="stat-card-value">{{ stats.total_boards }}</div>
     </div>
-    
-    <div class="stats-grid">
-        <div class="stat-card">
-            <h3>Total Boards</h3>
-            <div class="value">{{ stats.total_boards }}</div>
-        </div>
-        <div class="stat-card">
-            <h3>Total Threads</h3>
-            <div class="value">{{ stats.total_threads }}</div>
-        </div>
-        <div class="stat-card">
-            <h3>Total Posts</h3>
-            <div class="value">{{ stats.total_posts }}</div>
-        </div>
+    <div class="stat-card">
+        <div class="stat-card-label">Total Threads</div>
+        <div class="stat-card-value">{{ stats.total_threads }}</div>
     </div>
-    
-    <h3>Recent Boards</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Slug</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for board in boards %}
-            <tr>
-                <td>/{{ board.slug }}/</td>
-                <td>{{ board.name }}</td>
-                <td>{{ board.description }}</td>
-                <td>
-                    <a href="/{{ board.slug }}/">View</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <div class="stat-card">
+        <div class="stat-card-label">Total Posts</div>
+        <div class="stat-card-value">{{ stats.total_posts }}</div>
+    </div>
 </div>
+
+<h3>All Boards</h3>
+<table class="admin-table" aria-label="Boards list">
+    <thead>
+        <tr>
+            <th scope="col">Slug</th>
+            <th scope="col">Name</th>
+            <th scope="col">Description</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for board in boards %}
+        <tr>
+            <td>/{{ board.slug }}/</td>
+            <td>{{ board.name }}</td>
+            <td>{{ board.description }}</td>
+            <td>
+                <div class="actions">
+                    <a href="/{{ board.slug }}/" class="btn btn-ghost btn-sm">View</a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 {% endblock %}

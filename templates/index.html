@@ -1,12 +1,13 @@
 {% extends "base.html" %}
 
-{% block title %}RustChan{% endblock %}
+{% block title %}RustChan — Anonymous Imageboard{% endblock %}
 
 {% block content %}
-<div class="home-container">
-    <div class="rules-box">
+<div class="home-grid">
+
+    <div class="info-box">
         <h2>Welcome to RustChan</h2>
-        <p class="welcome-text">> An anonymous imageboard built with Rust</p>
+        <p class="welcome-banner">› An anonymous imageboard built with Rust</p>
         <ul>
             <li>No account required to post</li>
             <li>Your identity is anonymous (hashed from IP)</li>
@@ -14,15 +15,15 @@
             <li>Be respectful and follow the rules</li>
         </ul>
     </div>
-    
-    <div class="rules-box">
+
+    <div class="info-box">
         <h2>Boards</h2>
         <table class="boards-table">
             <thead>
                 <tr>
-                    <th>Board</th>
-                    <th>Name</th>
-                    <th>Description</th>
+                    <th scope="col">Board</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,5 +37,6 @@
             </tbody>
         </table>
     </div>
+
 </div>
 {% endblock %}

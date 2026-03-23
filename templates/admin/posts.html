@@ -1,61 +1,79 @@
 {% extends "admin/base.html" %}
 
-{% block title %}Posts - Admin{% endblock %}
+{% block title %}Posts — Admin{% endblock %}
+{% block nav_posts %}class="active"{% endblock %}
 
 {% block content %}
-<div class="admin-panel">
-    <h2>Manage Posts</h2>
-    
-    <div class="admin-nav">
-        <a href="/admin/dashboard">Dashboard</a>
-        <a href="/admin/boards">Boards</a>
-        <a href="/admin/posts">Posts</a>
-    </div>
-    
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Board</th>
-                <th>Thread</th>
-                <th>Author</th>
-                <th>Content</th>
-                <th>Date</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for post in posts %}
-            <tr>
-                <td>{{ post.id }}</td>
-                <td>/{{ post.board_slug }}/</td>
-                <td>{% if post.thread_id %}{{ post.thread_id }}{% else %}OP{% endif %}</td>
-                <td>{{ post.author_id }}</td>
-                <td>{{ post.content | str_slice(end="50") | safe }}...</td>
-                <td>{{ post.created_at }}</td>
-                <td>
+<h2>Manage Posts</h2>
+
+<table class="admin-table" aria-label="Posts list">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Board</th>
+            <th scope="col">Thread</th>
+            <th scope="col">Author</th>
+            <th scope="col">Content</th>
+            <th scope="col">Date</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for post in posts %}
+        <tr>
+            <td><strong>{{ post.id }}</strong></td>
+            <td>/{{ post.board_slug }}/</td>
+            <td>
+                {% if post.thread_id %}
+                    <a href="/{{ post.board_slug }}/thread/{{ post.thread_id }}#p{{ post.id }}"
+                       title="Go to post in thread">#{{ post.thread_id }}</a>
+                {% else %}
+                    <span title="This post is a thread OP">OP</span>
+                {% endif %}
+            </td>
+            <td>
+                <span style="font-size:11px;font-family:monospace;">
+                    {{ post.author_id | str_slice(end=8) }}
+                </span>
+            </td>
+            <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                {{ post.content | str_slice(end=80) | safe }}
+            </td>
+            <td style="white-space:nowrap;font-size:11px;color:#555;">
+                {{ post.created_at }}
+            </td>
+            <td>
+                <div class="actions">
                     {% if not post.thread_id %}
-                    <form method="get" action="/admin/threads/{{ post.id }}/lock" style="display:inline;">
-                        <button type="submit" class="btn btn-small">Lock</button>
-                    </form>
+                    <a href="/admin/threads/{{ post.id }}/lock"
+                       class="btn btn-ghost btn-sm"
+                       title="Lock this thread">
+                        Lock
+                    </a>
                     {% endif %}
-                    <form method="get" action="/admin/posts/{{ post.id }}/delete" style="display:inline;">
-                        <button type="submit" class="btn btn-danger btn-small" onclick="return confirm('Delete this post?')">Delete</button>
-                    </form>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    
-    <div class="pagination">
-        {% if current_page > 1 %}
-        <a href="/admin/posts?page={{ current_page - 1 }}">&laquo; Prev</a>
-        {% endif %}
-        <span>Page {{ current_page }} of {{ total_pages }}</span>
-        {% if current_page < total_pages %}
-        <a href="/admin/posts?page={{ current_page + 1 }}">Next &raquo;</a>
-        {% endif %}
-    </div>
+                    <a href="/admin/posts/{{ post.id }}/delete"
+                       class="btn btn-danger btn-sm"
+                       onclick="return confirm('Delete post #{{ post.id }}?')">
+                        Delete
+                    </a>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="pagination" aria-label="Pagination">
+    {% if current_page > 1 %}
+    <a href="/admin/posts?page={{ current_page - 1 }}" aria-label="Previous page">← Prev</a>
+    {% endif %}
+
+    <span class="current-page" aria-current="page">
+        Page {{ current_page }} / {{ total_pages }}
+    </span>
+
+    {% if current_page < total_pages %}
+    <a href="/admin/posts?page={{ current_page + 1 }}" aria-label="Next page">Next →</a>
+    {% endif %}
 </div>
 {% endblock %}

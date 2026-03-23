@@ -6,24 +6,39 @@
     <title>{% block title %}RustChan{% endblock %}</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/style.css">
+    {% block head %}{% endblock %}
 </head>
 <body>
     <header>
         <div class="header-inner">
-            <h1><a href="/">RustChan</a></h1>
-            <nav>
+            <div class="site-title">
+                <h1><a href="/">RustChan</a></h1>
+            </div>
+            <nav aria-label="Boards">
                 {% for board in boards %}
-                <a href="/{{ board.slug }}/">/{{ board.slug }}/</a>
+                <a href="/{{ board.slug }}/"
+                   {% block nav_active %}{% endblock %}
+                   aria-label="Board /{{ board.slug }}/">
+                    /{{ board.slug }}/
+                </a>
                 {% endfor %}
-                <a href="/admin/dashboard" style="color: #ff6600;">Admin</a>
+                <a href="/admin/dashboard" class="nav-admin" aria-label="Admin panel">Admin</a>
             </nav>
         </div>
     </header>
+
     <main>
+        {% if flash %}
+        <div class="flash flash-{{ flash.kind }}" role="alert" aria-live="polite">
+            {{ flash.message }}
+        </div>
+        {% endif %}
+
         {% block content %}{% endblock %}
     </main>
+
     <footer>
         <p>RustChan // Anonymous Imageboard</p>
     </footer>

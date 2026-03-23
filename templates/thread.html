@@ -1,90 +1,178 @@
 {% extends "base.html" %}
 
-{% block title %}/{{ board.slug }}/ - Thread #{{ thread.op.id }}{% endblock %}
+{% block title %}/{{ board.slug }}/ — Thread #{{ thread.op.id }}{% endblock %}
 
 {% block content %}
 <div class="thread">
-    <a href="/{{ board.slug }}/" class="back-link">&lt; Return to /{{ board.slug }}/</a>
-    
+
+    <a href="/{{ board.slug }}/" class="back-link" aria-label="Return to /{{ board.slug }}/">
+        ← /{{ board.slug }}/
+    </a>
+
     <div class="post-form-container">
-        <button class="toggle-form" onclick="toggleForm('reply-form')">+ Reply to Thread</button>
-        <form id="reply-form" class="post-form" action="/{{ board.slug }}/thread/{{ thread.op.id }}/reply" method="post" enctype="multipart/form-data">
-            <table>
-                <tr>
-                    <td><label>Comment</label></td>
-                    <td><textarea name="content" rows="4" cols="40" required placeholder="Type your reply..."></textarea></td>
-                </tr>
-                <tr>
-                    <td><label>Image</label></td>
-                    <td><input type="file" name="image" accept="image/*"></td>
-                </tr>
-                <tr>
-                    <td></td>
-                    <td><button type="submit">Post Reply</button></td>
-                </tr>
-            </table>
+        <button
+            type="button"
+            class="toggle-form-btn"
+            aria-expanded="false"
+            aria-controls="reply-form"
+            onclick="toggleForm('reply-form', this)">
+            + Reply to Thread
+        </button>
+
+        <form
+            id="reply-form"
+            class="post-form"
+            action="/{{ board.slug }}/thread/{{ thread.op.id }}/reply"
+            method="post"
+            enctype="multipart/form-data"
+            aria-label="Reply form">
+
+            <div class="form-field">
+                <label for="reply-content">Comment</label>
+                <textarea
+                    id="reply-content"
+                    name="content"
+                    required
+                    placeholder="Type your reply…"
+                    maxlength="4096"
+                    aria-describedby="reply-hint"></textarea>
+            </div>
+
+            <div class="form-field">
+                <label for="reply-image">Image</label>
+                <input
+                    type="file"
+                    id="reply-image"
+                    name="image"
+                    accept="image/*">
+            </div>
+
+            <div class="form-field">
+                <span></span>
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Post Reply</button>
+                    <span class="form-hint" id="reply-hint">Max 4096 chars · Images optional</span>
+                </div>
+            </div>
+
         </form>
     </div>
-    
+
     <hr>
-    
-    <div class="thread-full" id="t{{ thread.op.id }}">
-        <div class="op-post clearfix">
-            {% if thread.op.image_path %}
-            <div class="image-container">
-                <a href="/uploads/{{ thread.op.image_path }}" target="_blank">
-                    <img src="/uploads/{{ thread.op.image_path }}" alt="Image" class="thumb">
-                </a>
-                <span class="file-info">FILE: {{ thread.op.image_name | default(value="") | upper }}</span>
-            </div>
-            {% endif %}
+
+    <div class="thread-full" id="t{{ thread.op.id }}" aria-label="Thread posts">
+
+        <!-- OP -->
+        <div class="op-post">
             <div class="post-header">
-                <span class="post-id">No.{{ thread.op.id }}</span>
-                <button class="reply-link" onclick="quoteReply({{ thread.op.id }})">Reply</button>
-                <span class="author-id" style="background-color: #{{ thread.op.author_id | str_slice(end=6) }}">{{ thread.op.author_id | str_slice(end=8) }}</span>
-                <span class="date">{{ thread.op.created_at | date(format="%Y-%m-%d %H:%M:%S") }}</span>
+                <span class="post-id" id="p{{ thread.op.id }}">
+                    No.{{ thread.op.id }}
+                </span>
+                <button
+                    type="button"
+                    class="reply-btn"
+                    onclick="quoteReply({{ thread.op.id }})"
+                    title="Quote post #{{ thread.op.id }}">
+                    Reply
+                </button>
+                <span class="author-id"
+                      style="background-color: #{{ thread.op.author_id | str_slice(end=6) }}"
+                      title="Anonymous ID">
+                    {{ thread.op.author_id | str_slice(end=8) }}
+                </span>
+                <time class="post-date" datetime="{{ thread.op.created_at }}">
+                    {{ thread.op.created_at | date(format="%Y-%m-%d %H:%M:%S") }}
+                </time>
+                <a href="#p{{ thread.op.id }}" class="anchor-link" title="Permalink">#</a>
             </div>
-            <div class="post-content">{{ thread.op.content | safe }}</div>
+
+            <div class="post-media {% if not thread.op.image_path %}post-text-only{% endif %}">
+                {% if thread.op.image_path %}
+                <div class="image-container">
+                    <a href="/uploads/{{ thread.op.image_path }}" target="_blank" rel="noopener"
+                       title="Open full image">
+                        <img src="/uploads/{{ thread.op.image_path }}"
+                             alt="Post image"
+                             class="thumb">
+                    </a>
+                    <span class="file-info">{{ thread.op.image_name | default(value="") | upper }}</span>
+                </div>
+                {% endif %}
+                <div class="post-content">{{ thread.op.content | safe }}</div>
+            </div>
         </div>
-        
+
+        <!-- Replies -->
         {% for reply in thread.replies %}
-        <div class="reply-post clearfix" id="p{{ reply.id }}">
-            {% if reply.image_path %}
-            <div class="image-container">
-                <a href="/uploads/{{ reply.image_path }}" target="_blank">
-                    <img src="/uploads/{{ reply.image_path }}" alt="Image" class="thumb">
-                </a>
-                <span class="file-info">FILE: {{ reply.image_name | default(value="") | upper }}</span>
-            </div>
-            {% endif %}
+        <div class="reply-post" id="p{{ reply.id }}">
             <div class="post-header">
                 <span class="post-id">No.{{ reply.id }}</span>
-                <button class="reply-link" onclick="quoteReply({{ reply.id }})">Reply</button>
-                <span class="author-id" style="background-color: #{{ reply.author_id | str_slice(end=6) }}">{{ reply.author_id | str_slice(end=8) }}</span>
-                <span class="date">{{ reply.created_at | date(format="%Y-%m-%d %H:%M:%S") }}</span>
-                <a href="#p{{ reply.id }}" class="reply-link" style="margin-left: auto;">#</a>
+                <button
+                    type="button"
+                    class="reply-btn"
+                    onclick="quoteReply({{ reply.id }})"
+                    title="Quote post #{{ reply.id }}">
+                    Reply
+                </button>
+                <span class="author-id"
+                      style="background-color: #{{ reply.author_id | str_slice(end=6) }}"
+                      title="Anonymous ID">
+                    {{ reply.author_id | str_slice(end=8) }}
+                </span>
+                <time class="post-date" datetime="{{ reply.created_at }}">
+                    {{ reply.created_at | date(format="%Y-%m-%d %H:%M:%S") }}
+                </time>
+                <a href="#p{{ reply.id }}" class="anchor-link" title="Permalink">#</a>
             </div>
-            <div class="post-content">{{ reply.content | safe }}</div>
+
+            <div class="post-media {% if not reply.image_path %}post-text-only{% endif %}">
+                {% if reply.image_path %}
+                <div class="image-container">
+                    <a href="/uploads/{{ reply.image_path }}" target="_blank" rel="noopener">
+                        <img src="/uploads/{{ reply.image_path }}"
+                             alt="Reply image"
+                             class="thumb"
+                             loading="lazy">
+                    </a>
+                    <span class="file-info">{{ reply.image_name | default(value="") | upper }}</span>
+                </div>
+                {% endif %}
+                <div class="post-content">{{ reply.content | safe }}</div>
+            </div>
         </div>
         {% endfor %}
+
     </div>
 </div>
 
 <script>
-function toggleForm(id) {
+function toggleForm(id, btn) {
     const form = document.getElementById(id);
-    form.classList.toggle('visible');
+    const isOpen = form.classList.toggle('visible');
+    btn.setAttribute('aria-expanded', isOpen);
+    if (isOpen) {
+        form.querySelector('textarea')?.focus();
+    }
 }
 
 function quoteReply(postId) {
-    const form = document.getElementById('reply-form');
+    const form   = document.getElementById('reply-form');
+    const btn    = document.querySelector('[aria-controls="reply-form"]');
+    const textarea = form.querySelector('textarea');
+
     if (!form.classList.contains('visible')) {
         form.classList.add('visible');
+        btn?.setAttribute('aria-expanded', 'true');
     }
-    const textarea = form.querySelector('textarea');
+
     const quote = '>>' + postId + '\n';
-    textarea.value = quote + textarea.value;
+    const cur   = textarea.value;
+    // Avoid duplicate quotes
+    if (!cur.startsWith(quote)) {
+        textarea.value = quote + cur;
+    }
     textarea.focus();
+    textarea.setSelectionRange(textarea.value.length, textarea.value.length);
 }
 </script>
 {% endblock %}
