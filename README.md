@@ -2,6 +2,9 @@
 
 Un imageboard匿名 (style 4chan) écrit en Rust.
 
+
+![screenshot](https://raw.githubusercontent.com/Yusufibin/RustChan/refs/heads/main/Capture%20d%E2%80%99%C3%A9cran_2026-04-15_07-29-17.png)
+
 ## Stack
 
 - **Backend** : Rust + Axum
@@ -55,3 +58,8 @@ cargo clippy
 # Formater le code
 cargo fmt
 ```
+
+
+
+![screenshot](https://raw.githubusercontent.com/Yusufibin/RustChan/refs/heads/main/Capture%20d%E2%80%99%C3%A9cran_2026-04-15_07-29-45.png)
+![screenshot](https://raw.githubusercontent.com/Yusufibin/RustChan/refs/heads/main/Capture%20d%E2%80%99%C3%A9cran_2026-04-15_07-30-19.png)
