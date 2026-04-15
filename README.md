@@ -1,27 +1,27 @@
+
 # RustChan
 
-Un imageboard匿名 (style 4chan) écrit en Rust.
-
+An anonymous imageboard (4chan style) written in Rust.
 
 ![screenshot](https://raw.githubusercontent.com/Yusufibin/RustChan/refs/heads/main/Capture%20d%E2%80%99%C3%A9cran_2026-04-15_07-29-17.png)
 
 ## Stack
 
-- **Backend** : Rust + Axum
-- **Base de données** : SQLite (sqlx)
-- **Templates** : Tera
-- **Async** : Tokio
+- **Backend**: Rust + Axum
+- **Database**: SQLite (sqlx)
+- **Templates**: Tera
+- **Async**: Tokio
 
 ## Installation
 
 ```bash
-# Compiler le projet
+# Build the project
 cargo build
 
-# Lancer le serveur
+# Run the server
 cargo run
 
-# Avec un port personnalisé
+# With a custom port
 PORT=3001 cargo run
 ```
 
@@ -29,37 +29,36 @@ PORT=3001 cargo run
 
 ```
 src/
-  main.rs      # Point d'entrée, routes
-  db/          # Opérations base de données
-  handlers/    # Gestionnaires HTTP
-  models/      # Structures de données
-templates/     # Templates Tera
+  main.rs      # Entry point, routes
+  db/          # Database operations
+  handlers/    # HTTP handlers
+  models/      # Data structures
+templates/     # Tera templates
 static/        # CSS, images
-uploads/       # Images uploadées
+uploads/       # Uploaded images
 ```
 
-## Fonctionnalités
+## Features
 
-- Création et gestion de boards
-- Threads et posts avec/sans images
-- Panel d'administration
-- Upload d'images
-- Système d'authentification admin
+- Board creation and management
+- Threads and posts with/without images
+- Administration panel
+- Image uploading
+- Admin authentication system
 
-## Commandes utiles
+## Useful commands
 
 ```bash
-# Vérifier le code sans compiler
+# Check the code without compiling
 cargo check
 
 # Linter
 cargo clippy
 
-# Formater le code
+# Format the code
 cargo fmt
 ```
 
-
-
 ![screenshot](https://raw.githubusercontent.com/Yusufibin/RustChan/refs/heads/main/Capture%20d%E2%80%99%C3%A9cran_2026-04-15_07-29-45.png)
+
 ![screenshot](https://raw.githubusercontent.com/Yusufibin/RustChan/refs/heads/main/Capture%20d%E2%80%99%C3%A9cran_2026-04-15_07-30-19.png)
