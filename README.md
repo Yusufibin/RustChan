@@ -1,5 +1,5 @@
 
-# RustChan
+# RustChan.
 
 An anonymous imageboard (4chan style) written in Rust.
 
