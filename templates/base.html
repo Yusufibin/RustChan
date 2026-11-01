@@ -19,7 +19,6 @@
             <nav aria-label="Boards">
                 {% for board in boards %}
                 <a href="/{{ board.slug }}/"
-                   {% block nav_active %}{% endblock %}
                    aria-label="Board /{{ board.slug }}/">
                     /{{ board.slug }}/
                 </a>

@@ -1,19 +1,21 @@
+use crate::models::{AdminStats, Board, Post, PostWithBoard, Thread};
 use anyhow::Result;
 use sqlx::SqlitePool;
-use crate::models::{AdminStats, Board, Post, PostWithBoard, Thread};
 
 pub async fn get_boards(pool: &SqlitePool) -> Result<Vec<Board>> {
-    let boards = sqlx::query_as::<_, Board>("SELECT id, slug, name, description FROM boards ORDER BY slug")
-        .fetch_all(pool)
-        .await?;
+    let boards =
+        sqlx::query_as::<_, Board>("SELECT id, slug, name, description FROM boards ORDER BY slug")
+            .fetch_all(pool)
+            .await?;
     Ok(boards)
 }
 
 pub async fn get_board(pool: &SqlitePool, slug: &str) -> Result<Option<Board>> {
-    let board = sqlx::query_as::<_, Board>("SELECT id, slug, name, description FROM boards WHERE slug = ?")
-        .bind(slug)
-        .fetch_optional(pool)
-        .await?;
+    let board =
+        sqlx::query_as::<_, Board>("SELECT id, slug, name, description FROM boards WHERE slug = ?")
+            .bind(slug)
+            .fetch_optional(pool)
+            .await?;
     Ok(board)
 }
 
@@ -72,12 +74,17 @@ pub async fn get_thread(pool: &SqlitePool, thread_id: i64) -> Result<Option<Thre
             .fetch_all(pool)
             .await?;
 
-            let reply_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM posts WHERE thread_id = ?")
-                .bind(thread_id)
-                .fetch_one(pool)
-                .await?;
+            let reply_count: i64 =
+                sqlx::query_scalar("SELECT COUNT(*) FROM posts WHERE thread_id = ?")
+                    .bind(thread_id)
+                    .fetch_one(pool)
+                    .await?;
 
-            Ok(Some(Thread { op, replies, reply_count }))
+            Ok(Some(Thread {
+                op,
+                replies,
+                reply_count,
+            }))
         }
         None => Ok(None),
     }
@@ -93,7 +100,7 @@ pub async fn create_post(
     image_name: Option<&str>,
 ) -> Result<i64> {
     let now = chrono::Utc::now().naive_utc();
-    
+
     let result = sqlx::query(
         "INSERT INTO posts (board_slug, thread_id, author_id, content, image_path, image_name, created_at, bump_time) 
          VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
@@ -129,7 +136,7 @@ pub async fn init_db(pool: &SqlitePool) -> Result<()> {
             slug TEXT UNIQUE NOT NULL,
             name TEXT NOT NULL,
             description TEXT NOT NULL
-        )"
+        )",
     )
     .execute(pool)
     .await?;
@@ -147,13 +154,17 @@ pub async fn init_db(pool: &SqlitePool) -> Result<()> {
             bump_time DATETIME NOT NULL,
             FOREIGN KEY (board_slug) REFERENCES boards(slug),
             FOREIGN KEY (thread_id) REFERENCES posts(id)
-        )"
+        )",
     )
     .execute(pool)
     .await?;
 
     let boards = [
-        ("b", "Random", "The stories and information posted here are artistic works of fiction and falsehood."),
+        (
+            "b",
+            "Random",
+            "The stories and information posted here are artistic works of fiction and falsehood.",
+        ),
         ("g", "Technology", "Install Gentoo"),
         ("v", "Video Games", "vidya gaems"),
         ("a", "Anime & Manga", "Discuss Chinese cartoons"),
@@ -174,7 +185,7 @@ pub async fn init_db(pool: &SqlitePool) -> Result<()> {
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             token TEXT UNIQUE NOT NULL,
             created_at DATETIME NOT NULL
-        )"
+        )",
     )
     .execute(pool)
     .await?;
@@ -182,7 +193,12 @@ pub async fn init_db(pool: &SqlitePool) -> Result<()> {
     Ok(())
 }
 
-pub async fn create_board(pool: &SqlitePool, slug: &str, name: &str, description: &str) -> Result<()> {
+pub async fn create_board(
+    pool: &SqlitePool,
+    slug: &str,
+    name: &str,
+    description: &str,
+) -> Result<()> {
     sqlx::query("INSERT INTO boards (slug, name, description) VALUES (?, ?, ?)")
         .bind(slug)
         .bind(name)
@@ -192,7 +208,12 @@ pub async fn create_board(pool: &SqlitePool, slug: &str, name: &str, description
     Ok(())
 }
 
-pub async fn update_board(pool: &SqlitePool, slug: &str, name: &str, description: &str) -> Result<()> {
+pub async fn update_board(
+    pool: &SqlitePool,
+    slug: &str,
+    name: &str,
+    description: &str,
+) -> Result<()> {
     sqlx::query("UPDATE boards SET name = ?, description = ? WHERE slug = ?")
         .bind(name)
         .bind(description)
@@ -223,9 +244,10 @@ pub async fn get_admin_stats(pool: &SqlitePool) -> Result<AdminStats> {
         .fetch_one(pool)
         .await?;
 
-    let total_threads: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM posts WHERE thread_id IS NULL")
-        .fetch_one(pool)
-        .await?;
+    let total_threads: i64 =
+        sqlx::query_scalar("SELECT COUNT(*) FROM posts WHERE thread_id IS NULL")
+            .fetch_one(pool)
+            .await?;
 
     Ok(AdminStats {
         total_boards,
@@ -234,7 +256,11 @@ pub async fn get_admin_stats(pool: &SqlitePool) -> Result<AdminStats> {
     })
 }
 
-pub async fn get_all_posts(pool: &SqlitePool, limit: i64, offset: i64) -> Result<Vec<PostWithBoard>> {
+pub async fn get_all_posts(
+    pool: &SqlitePool,
+    limit: i64,
+    offset: i64,
+) -> Result<Vec<PostWithBoard>> {
     let posts = sqlx::query_as::<_, PostWithBoard>(
         "SELECT id, board_slug, thread_id, author_id, content, image_path, image_name, created_at, bump_time 
          FROM posts ORDER BY created_at DESC LIMIT ? OFFSET ?"

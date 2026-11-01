@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use chrono::NaiveDateTime;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize, sqlx::FromRow)]
 pub struct Board {
@@ -42,13 +42,6 @@ pub struct Thread {
     pub op: Post,
     pub replies: Vec<Post>,
     pub reply_count: i64,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct NewBoard {
-    pub slug: String,
-    pub name: String,
-    pub description: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]

@@ -1,0 +1,13 @@
+{% extends "admin/base.html" %}
+{% block title %}Edit Board — Admin{% endblock %}
+{% block nav_boards %}class="active"{% endblock %}
+{% block content %}
+<h2>Edit /{{ board.slug }}/</h2>
+<form method="post" action="/admin/boards/{{ board.slug }}/edit" class="admin-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <div class="admin-field"><label for="name">Name</label><input id="name" name="name" value="{{ board.name }}" required></div>
+    <div class="admin-field"><label for="description">Description</label><textarea id="description" name="description" rows="3">{{ board.description }}</textarea></div>
+    <button class="btn btn-primary" type="submit">Save changes</button>
+    <a href="/admin/boards" class="btn btn-ghost">Cancel</a>
+</form>
+{% endblock %}

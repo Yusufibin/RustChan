@@ -37,7 +37,7 @@
                 </span>
             </td>
             <td style="max-width:260px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                {{ post.content | str_slice(end=80) | safe }}
+                {{ post.content | striptags | str_slice(end=80) }}
             </td>
             <td style="white-space:nowrap;font-size:11px;color:#555;">
                 {{ post.created_at }}
@@ -45,17 +45,15 @@
             <td>
                 <div class="actions">
                     {% if not post.thread_id %}
-                    <a href="/admin/threads/{{ post.id }}/lock"
-                       class="btn btn-ghost btn-sm"
-                       title="Lock this thread">
-                        Lock
-                    </a>
+                    <form method="post" action="/admin/threads/{{ post.id }}/lock">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <button class="btn btn-ghost btn-sm" type="submit">Lock</button>
+                    </form>
                     {% endif %}
-                    <a href="/admin/posts/{{ post.id }}/delete"
-                       class="btn btn-danger btn-sm"
-                       onclick="return confirm('Delete post #{{ post.id }}?')">
-                        Delete
-                    </a>
+                    <form method="post" action="/admin/posts/{{ post.id }}/delete" onsubmit="return confirm('Delete this post?')">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                    </form>
                 </div>
             </td>
         </tr>

@@ -8,7 +8,8 @@
 
 <h3>Create New Board</h3>
 <div class="admin-form">
-    <form method="post" action="/admin/boards" enctype="multipart/form-data" aria-label="Create board form">
+    <form method="post" action="/admin/boards" aria-label="Create board form">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
         <div class="admin-field">
             <label for="new-slug">Slug <span style="font-weight:400;color:#888;">(e.g. "tech")</span></label>
             <input type="text" id="new-slug" name="slug" required
@@ -47,15 +48,11 @@
             <td>
                 <div class="actions">
                     <a href="/{{ board.slug }}/" class="btn btn-ghost btn-sm">View</a>
-                    <button type="button" class="btn btn-ghost btn-sm"
-                            onclick="openEditModal('{{ board.slug }}', '{{ board.name | e }}', '{{ board.description | e }}')">
-                        Edit
-                    </button>
-                    <a href="/admin/boards/{{ board.slug }}/delete"
-                       class="btn btn-danger btn-sm"
-                       onclick="return confirm('Delete /{{ board.slug }}/ and ALL its posts? This cannot be undone.')">
-                        Delete
-                    </a>
+                    <a href="/admin/boards/{{ board.slug }}/edit" class="btn btn-ghost btn-sm">Edit</a>
+                    <form method="post" action="/admin/boards/{{ board.slug }}/delete" onsubmit="return confirm('Delete this board and all its posts?')">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                        <button class="btn btn-danger btn-sm" type="submit">Delete</button>
+                    </form>
                 </div>
             </td>
         </tr>
@@ -63,55 +60,4 @@
     </tbody>
 </table>
 
-<!-- Edit Modal -->
-<div id="editModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal-box">
-        <h3 id="modal-title">Edit Board</h3>
-        <form method="post" id="editForm" enctype="multipart/form-data">
-            <div class="admin-field">
-                <label for="editSlug">Slug</label>
-                <input type="text" id="editSlug" name="slug" readonly
-                       style="background:#f0f0f0;color:#888;cursor:not-allowed;">
-            </div>
-            <div class="admin-field">
-                <label for="editName">Name</label>
-                <input type="text" id="editName" name="name" required>
-            </div>
-            <div class="admin-field">
-                <label for="editDescription">Description</label>
-                <textarea id="editDescription" name="description" rows="3"></textarea>
-            </div>
-            <div class="modal-actions">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <button type="button" class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
-            </div>
-        </form>
-    </div>
-</div>
-
-<script>
-function openEditModal(slug, name, description) {
-    document.getElementById('editSlug').value = slug;
-    document.getElementById('editName').value = name;
-    document.getElementById('editDescription').value = description;
-    document.getElementById('editForm').action = '/admin/boards/' + slug + '/edit';
-    const modal = document.getElementById('editModal');
-    modal.classList.add('open');
-    document.getElementById('editName').focus();
-}
-
-function closeEditModal() {
-    document.getElementById('editModal').classList.remove('open');
-}
-
-// Close on overlay click
-document.getElementById('editModal').addEventListener('click', function(e) {
-    if (e.target === this) closeEditModal();
-});
-
-// Close on Escape
-document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeEditModal();
-});
-</script>
 {% endblock %}

@@ -8,3 +8,8 @@ opencode.json
 # Base de données et uploads
 *.db
 uploads/
+
+.env.*
+!.env.example
+*.db-shm
+*.db-wal

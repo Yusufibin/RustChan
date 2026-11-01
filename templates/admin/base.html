@@ -44,7 +44,7 @@
                        {% block nav_posts %}{% endblock %}>
                         Posts
                     </a>
-                    <a href="/logout">Logout</a>
+                    <form method="post" action="/logout"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="btn btn-ghost" type="submit">Logout</button></form>
                 </nav>
             </aside>
 
